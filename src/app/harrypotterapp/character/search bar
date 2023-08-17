@@ -1,0 +1,79 @@
+import React, { useState, useEffect } from 'react';
+import { useRecoilState } from 'recoil';
+import { charactersState } from '../recoil/atoms';
+import axios from 'axios';
+import CharacterCard from '../components/CharacterCard';
+
+const HomePage: React.FC = () => {
+  const [characters, setCharacters] = useRecoilState(charactersState);
+  const [searchQuery, setSearchQuery] = useState('');
+ // const [filteredCharacters, setFilteredCharacters] = useState<Character[]>(characters);
+
+  useEffect(() => {
+    async function fetchCharacters() {
+      try {
+        const response = await axios.get('https://hp-api.onrender.com/api/characters');
+        setCharacters(response.data);
+      } catch (error) {
+        console.error('Error fetching characters:', error);
+      }
+    }
+
+    fetchCharacters();
+  }, [setCharacters]);
+
+  useEffect(() => {
+  //  setFilteredCharacters(newFilteredCharacters);
+  }, [searchQuery, characters]);
+
+  return (
+
+    <div>
+      <div className ="flex items-center">
+      
+      <h1>Harry Potter Characters</h1>
+      </div>
+
+      {/* Search input and button */}
+      
+      <div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 1g:grid md:grid-cols-3 1g:-cols-4 gap-8 mt-8">
+      
+        <div style={{ textAlign: 'center', margin: '20px auto' }}>
+        <input type="text" placeholder="Search by name or house..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+          style={{
+            width: '200px',
+            height: '50px',
+            borderRadius: '10px',
+            margin: 'auto',
+            textAlign: 'center',
+            objectFit: 'cover',
+          }}
+        />
+      </div>
+      <div style={{ textAlign: 'center', margin: '20px auto' }}></div>
+        <input
+          type="text"
+          placeholder="Search by name..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{
+            width: '200px',
+            height: '50px',
+            borderRadius: '10px',
+            margin: 'auto',
+            textAlign: 'center',
+            objectFit: 'cover',
+          }}
+
+        />
+        </div>
+        <button onClick={() => setSearchQuery('')}>Search</button>
+      </div>
+
+     
+    </div>
+  );
+};
+
+export default HomePage;
